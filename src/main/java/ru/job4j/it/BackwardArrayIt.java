@@ -22,4 +22,3 @@ public class BackwardArrayIt {
         return data[point--];
     }
 }
-
