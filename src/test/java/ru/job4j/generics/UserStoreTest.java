@@ -66,29 +66,4 @@ public class UserStoreTest {
         User result = store.findById("1");
         assertThat(result.getUsername(), is("Petr"));
     }
-
-    @Test
-    public void testAddRole() {
-        RoleStore roleStore = new RoleStore();
-        roleStore.add(new Role("1", "ADMIN"));
-        Role result = roleStore.findById("1");
-        assertThat(result.getRole(), is("ADMIN"));
-    }
-
-    @Test
-    public void testReplaceRole() {
-        RoleStore roleStore = new RoleStore();
-        roleStore.add(new Role("2", "USER"));
-        roleStore.replace("2", new Role("2", "ADMIN"));
-        assertThat(roleStore.findById("2").getRole(), is("ADMIN"));
-    }
-
-    @Test
-    public void testDeleteRole() {
-        RoleStore roleStore = new RoleStore();
-        roleStore.add(new Role("1", "USER"));
-        roleStore.delete("1");
-        assertNull(roleStore.findById("1"));
-    }
-
 }
