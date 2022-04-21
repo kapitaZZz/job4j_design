@@ -23,13 +23,12 @@ public class SimpleArrayList<T> implements List<T> {
         if (container.length <= size) {
             testContainer = Arrays.copyOf(container, container.length * 2);
             container = Arrays.copyOf(testContainer, testContainer.length);
-            container[size++] = value;
-        } else {
-            container[size++] = value;
         }
+        container[size++] = value;
         modCount++;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T set(int index, T newValue) {
         Objects.checkIndex(index, size);
@@ -38,6 +37,7 @@ public class SimpleArrayList<T> implements List<T> {
         return oldValue;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T get(int index) throws IndexOutOfBoundsException {
         Objects.checkIndex(index, size);
@@ -49,6 +49,7 @@ public class SimpleArrayList<T> implements List<T> {
         return size;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T remove(int index) {
         Objects.checkIndex(index, size);
@@ -61,6 +62,7 @@ public class SimpleArrayList<T> implements List<T> {
         return oldValue;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Iterator<T> iterator() {
         int temModCount = modCount;
