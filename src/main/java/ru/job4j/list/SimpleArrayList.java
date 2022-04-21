@@ -4,42 +4,35 @@ import java.util.*;
 
 public class SimpleArrayList<T> implements List<T> {
 
-    private Object[] container;
+    private T[] container;
     private int size;
 
     private int modCount;
 
-    public SimpleArrayList() {
-        this.container = new Object[10];
-    }
-
+    @SuppressWarnings("unchecked")
     public SimpleArrayList(int capacity) {
-        this.container = new Object[capacity];
+        this.container = (T[]) new Object[capacity];
     }
 
     @Override
     public void add(T value) {
-        if (container.length <= size) {
-            container = Arrays.copyOf(container, container.length * 2);
-        }
+        checkLength();
         container[size++] = value;
         modCount++;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T set(int index, T newValue) {
         Objects.checkIndex(index, size);
-        T oldValue = (T) container[index];
+        T oldValue = container[index];
         container[index] = newValue;
         return oldValue;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T get(int index) {
         Objects.checkIndex(index, size);
-        return (T) container[index];
+        return container[index];
     }
 
     @Override
@@ -47,11 +40,10 @@ public class SimpleArrayList<T> implements List<T> {
         return size;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T remove(int index) {
         Objects.checkIndex(index, size);
-        T oldValue = (T) container[index];
+        T oldValue = container[index];
         System.arraycopy(container, index + 1, container,
                 index, container.length - index - 1);
         container[container.length - 1] = null;
@@ -60,7 +52,14 @@ public class SimpleArrayList<T> implements List<T> {
         return oldValue;
     }
 
-    @SuppressWarnings("unchecked")
+    private void checkLength() {
+        if (container.length == 0) {
+            container = Arrays.copyOf(container, 10);
+        } else if (container.length == size) {
+            container = Arrays.copyOf(container, container.length * 2);
+        }
+    }
+
     @Override
     public Iterator<T> iterator() {
         int temModCount = modCount;
@@ -70,6 +69,9 @@ public class SimpleArrayList<T> implements List<T> {
 
             @Override
             public boolean hasNext() {
+                if (temModCount != modCount) {
+                    throw new ConcurrentModificationException();
+                }
                 return valueIter < size;
             }
 
@@ -78,10 +80,7 @@ public class SimpleArrayList<T> implements List<T> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                if (temModCount != modCount) {
-                    throw new ConcurrentModificationException();
-                }
-                return (T) container[valueIter++];
+                return container[valueIter++];
             }
         };
     }
