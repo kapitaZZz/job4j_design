@@ -5,7 +5,6 @@ import java.util.*;
 public class SimpleArrayList<T> implements List<T> {
 
     private Object[] container;
-    private Object[] testContainer;
     private int size;
 
     private int modCount;
@@ -21,8 +20,7 @@ public class SimpleArrayList<T> implements List<T> {
     @Override
     public void add(T value) {
         if (container.length <= size) {
-            testContainer = Arrays.copyOf(container, container.length * 2);
-            container = Arrays.copyOf(testContainer, testContainer.length);
+            container = Arrays.copyOf(container, container.length * 2);
         }
         container[size++] = value;
         modCount++;
@@ -39,7 +37,7 @@ public class SimpleArrayList<T> implements List<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T get(int index) throws IndexOutOfBoundsException {
+    public T get(int index) {
         Objects.checkIndex(index, size);
         return (T) container[index];
     }
