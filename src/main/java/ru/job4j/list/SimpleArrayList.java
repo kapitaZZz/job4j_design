@@ -5,12 +5,10 @@ import java.util.*;
 public class SimpleArrayList<T> implements List<T> {
 
     private Object[] container;
-
+    private Object[] testContainer;
     private int size;
 
     private int modCount;
-
-    private int pointer;
 
     public SimpleArrayList() {
         this.container = new Object[10];
@@ -22,74 +20,89 @@ public class SimpleArrayList<T> implements List<T> {
 
     @Override
     public void add(T value) {
-        if (pointer == container.length - 1) {
-            resize(container.length * 2);
-            container[pointer++] = value;
+        if (container.length <= size) {
+            testContainer = Arrays.copyOf(container, container.length * 2);
+            container = Arrays.copyOf(testContainer, testContainer.length);
+            container[size++] = value;
+        } else {
+            container[size++] = value;
         }
-    }
-
-    private void resize(int newLength) {
-        Object[] newArr = new Object[newLength];
-        System.arraycopy(container, 0, newArr, 0, pointer);
-        container = newArr;
+        modCount++;
     }
 
     @Override
     public T set(int index, T newValue) {
+        Objects.checkIndex(index, size);
         T oldValue = (T) container[index];
         container[index] = newValue;
         return oldValue;
     }
 
     @Override
-    public T remove(int index) {
-        T curr = (T) container[index];
-        for (int i = index; i < pointer; i++) {
-            container[i] = container[i + 1];
-        }
-        container[pointer] = null;
-        pointer--;
-        return curr;
-    }
-
-    @Override
-    public T get(int index) {
-//        Objects.checkIndex(index, size);
-        if (index <= 0 || index > size()) {
-            throw new IllegalArgumentException();
-        }
+    public T get(int index) throws IndexOutOfBoundsException {
+        Objects.checkIndex(index, size);
         return (T) container[index];
     }
 
     @Override
     public int size() {
-        return container.length;
+        return size;
+    }
+
+    @Override
+    public T remove(int index) {
+        Objects.checkIndex(index, size);
+        T oldValue = (T) container[index];
+        System.arraycopy(container, index + 1, container,
+                index, container.length - index - 1);
+        container[container.length - 1] = null;
+        size--;
+        modCount++;
+        return oldValue;
     }
 
     @Override
     public Iterator<T> iterator() {
+        int temModCount = modCount;
         return new Iterator<T>() {
-            private final Object[] data = container;
-            private final int tempModificateCount = modCount;
-            private final int tempSize = size;
-            private int tempPoint;
+
+            int valueIter;
 
             @Override
             public boolean hasNext() {
-                if (tempModificateCount != modCount) {
-                    throw new ConcurrentModificationException();
-                }
-                return pointer < tempSize;
+                return valueIter < size;
             }
 
             @Override
             public T next() {
                 if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                if (temModCount != modCount) {
                     throw new ConcurrentModificationException();
                 }
-                return (T) data[tempPoint++];
+                return (T) container[valueIter++];
             }
         };
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SimpleArrayList<?> that = (SimpleArrayList<?>) o;
+        return size == that.size && modCount == that.modCount && Arrays.equals(container, that.container);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(size, modCount);
+        result = 31 * result + Arrays.hashCode(container);
+        return result;
     }
 }
 
