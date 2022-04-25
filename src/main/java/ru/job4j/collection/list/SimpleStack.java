@@ -8,6 +8,10 @@ public class SimpleStack<T> {
         return linked.deleteFirst();
     }
 
+    public int getSize() {
+        return linked.getSize();
+    }
+
     public void push(T value) {
         linked.addFirst(value);
     }
