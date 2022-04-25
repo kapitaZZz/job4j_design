@@ -14,6 +14,10 @@ public class SimpleArrayList<T> implements List<T> {
         this.container = (T[]) new Object[capacity];
     }
 
+    public SimpleArrayList() {
+        this.size = 10;
+    }
+
     @Override
     public void add(T value) {
         checkLength();
