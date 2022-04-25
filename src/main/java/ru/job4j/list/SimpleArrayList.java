@@ -13,9 +13,9 @@ public class SimpleArrayList<T> implements List<T> {
     public SimpleArrayList(int capacity) {
         this.container = (T[]) new Object[capacity];
     }
-
+    @SuppressWarnings("unchecked")
     public SimpleArrayList() {
-        this.size = 10;
+        this.container = (T[]) new Object[0];
     }
 
     @Override

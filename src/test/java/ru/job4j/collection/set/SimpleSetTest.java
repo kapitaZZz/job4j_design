@@ -54,11 +54,8 @@ public class SimpleSetTest {
     public void whenAddNonNullDuplicates() {
         Set<Integer> set = new SimpleSet<>();
         assertTrue(set.add(1));
-        assertTrue(set.add(1));
-        assertTrue(set.add(1));
-        assertTrue(set.add(1));
-
-        //assertFalse(set.add(1));
-        //assertTrue(set.add(3));
+        assertFalse(set.add(1));
+        assertFalse(set.add(1));
+        assertFalse(set.add(1));
     }
 }
