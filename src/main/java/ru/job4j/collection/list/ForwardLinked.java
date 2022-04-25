@@ -18,6 +18,7 @@ public class ForwardLinked<T> implements Iterable<T> {
         while (tail.next != null) {
             tail = tail.next;
         }
+        length++;
         tail.next = node;
     }
 
@@ -28,6 +29,23 @@ public class ForwardLinked<T> implements Iterable<T> {
 
     public int getSize() {
         return length;
+    }
+
+    public boolean revert() {
+        if (length == 0 || length == 1) {
+            return false;
+        }
+        Node<T> current = head;
+        Node<T> goal = null;
+
+        while (current != null) {
+            Node<T> next = current.next;
+            current.next = goal;
+            goal = current;
+            current = next;
+        }
+        head = goal;
+        return true;
     }
 
     @Override
