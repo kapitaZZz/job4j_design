@@ -13,17 +13,15 @@ public class SimpleSet<T> implements Set<T> {
     public boolean add(T value) {
         if (contains(value)) {
             return false;
-        } else {
-            set.add(value);
         }
+        set.add(value);
         return true;
     }
 
     @Override
     public boolean contains(T value) {
-        Iterator<T> iter = set.iterator();
-        while (iter.hasNext()) {
-            if (Objects.equals(iter.next(), value)) {
+        for (T t : set) {
+            if (Objects.equals(t, value)) {
                 return true;
             }
         }
