@@ -50,3 +50,4 @@ public class SimpleSet<T> implements Set<T> {
         return Objects.hash(set);
     }
 }
+
