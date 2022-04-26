@@ -13,11 +13,8 @@ public class ListUtils {
 
     public static <T> void addAfter(List<T> list, int index, T value) {
         Objects.checkIndex(index, list.size());
-        ListIterator<T> it = list.listIterator(index);
-        if (it.nextIndex() != list.size()) {
-            it.next();
-            it.add(value);
-        }
+        ListIterator<T> it = list.listIterator(index + 1);
+        it.add(value);
     }
 
     public static <T> void removeIf(List<T> list, Predicate<T> filter) {
