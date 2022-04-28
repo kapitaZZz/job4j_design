@@ -1,9 +1,6 @@
 package ru.job4j.map;
 
-import java.util.Arrays;
-import java.util.ConcurrentModificationException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class SimpleMap<K, V> implements Map<K, V> {
 
@@ -20,7 +17,7 @@ public class SimpleMap<K, V> implements Map<K, V> {
     public boolean put(K key, V value) {
         boolean flag = false;
         if (capacity * LOAD_FACTOR <= size) {
-            capacity += 2;
+            capacity *= 2;
             expand();
         }
         int tempIndex = indexFor(hash(key.hashCode()));
@@ -44,46 +41,40 @@ public class SimpleMap<K, V> implements Map<K, V> {
     private void expand() {
         MapEntry<K, V>[] tempMap = new MapEntry[capacity];
         for (MapEntry<K, V> map : table) {
+            if (map == null) {
+                continue;
+            }
             tempMap[indexFor(hash(map.key.hashCode()))] = map;
         }
-        table = Arrays.copyOf(tempMap, capacity);
+        table = tempMap;
     }
 
     @Override
     public V get(K key) {
-        for (MapEntry<K, V> map : table) {
-            if (map == null) {
-                continue;
-            }
-            if (map.key.equals(key)) {
-                return map.value;
-            }
-        }
-        return null;
+        int index = hash(key.hashCode());
+        return (table[index] != null || Objects.equals(table[index], key))
+                ? null
+                : table[index].value;
     }
 
     @Override
     public boolean remove(K key) {
         boolean flag = false;
-        for (MapEntry<K, V> map : table) {
-            if (map == null) {
-                continue;
-            }
-            if (map.key.equals(key)) {
-                map.key = null;
-                map.value = null;
-                modCount++;
-                size--;
-                flag = true;
-            }
+        int index = hash(key.hashCode());
+        if (table[index] != null || Objects.equals(table[index], key)) {
+            table[index].value = null;
+            table[index] = null;
+            modCount++;
+            size--;
+            flag = true;
         }
         return flag;
     }
 
     @Override
     public Iterator<K> iterator() {
-        modCount = count;
-        class SimpleHashIterator implements Iterator<K> {
+        count = modCount;
+        return new Iterator<K>() {
             int cursor;
 
             @Override
@@ -99,10 +90,9 @@ public class SimpleMap<K, V> implements Map<K, V> {
                 if (count != modCount) {
                     throw new ConcurrentModificationException();
                 }
-                return (K) table[size++];
+                return (K) table[size++].key;
             }
-        }
-        return new SimpleHashIterator();
+        };
     }
 
     private static class MapEntry<K, V> {
