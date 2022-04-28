@@ -79,10 +79,13 @@ public class SimpleMap<K, V> implements Map<K, V> {
 
             @Override
             public boolean hasNext() {
-                while (table[count] == null && count < table.length - 1) {
-                    count++;
+                if (count != modCount) {
+                    throw new ConcurrentModificationException();
                 }
-                return cursor < size;
+                while (table[cursor] == null && cursor < table.length - 1) {
+                    cursor++;
+                }
+                return cursor < table.length;
             }
 
             @Override
@@ -90,10 +93,7 @@ public class SimpleMap<K, V> implements Map<K, V> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                if (count != modCount) {
-                    throw new ConcurrentModificationException();
-                }
-                return (K) table[size++].key;
+                return (K) table[cursor++].key;
             }
         };
     }
