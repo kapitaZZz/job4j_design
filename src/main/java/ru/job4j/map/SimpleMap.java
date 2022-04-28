@@ -79,6 +79,9 @@ public class SimpleMap<K, V> implements Map<K, V> {
 
             @Override
             public boolean hasNext() {
+                while (table[count] == null && count < table.length - 1) {
+                    count++;
+                }
                 return cursor < size;
             }
 
