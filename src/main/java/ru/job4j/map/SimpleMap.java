@@ -53,8 +53,8 @@ public class SimpleMap<K, V> implements Map<K, V> {
     public V get(K key) {
         int index = hash(key.hashCode());
         return (table[index] != null || Objects.equals(table[index], key))
-                ? null
-                : table[index].value;
+                ? table[index].value
+                : null;
     }
 
     @Override
