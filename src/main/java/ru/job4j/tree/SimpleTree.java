@@ -16,15 +16,16 @@ public class SimpleTree<E> implements Tree<E> {
     public boolean add(E parent, E child) {
         boolean rsl = true;
         Node<E> parentNode = findBy(parent).orElse(null);
-        if (parentNode == null) {
-            throw new NoSuchElementException();
-        }
-        if (findBy(child).isPresent()) {
+        if (parentNode == null || findBy(child).isPresent()) {
             rsl = false;
         } else {
             parentNode.children.add(new Node<>(child));
         }
         return rsl;
+    }
+
+    public boolean isBinary() {
+        return false;
     }
 
     @Override
