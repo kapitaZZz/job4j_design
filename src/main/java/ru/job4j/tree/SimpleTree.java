@@ -28,8 +28,7 @@ public class SimpleTree<E> implements Tree<E> {
 
     @Override
     public boolean isBinary() {
-        Predicate<Node<E>> predicate = ch -> !ch.children.isEmpty() && ch.children.size() > 2;
-        Optional<Node<E>> rsl = findByPredicate(predicate);
+        Optional<Node<E>> rsl = findByPredicate(ch -> !ch.children.isEmpty() && ch.children.size() > 2);
         return rsl.isEmpty();
     }
 
@@ -43,16 +42,15 @@ public class SimpleTree<E> implements Tree<E> {
 
     private Optional<Node<E>> findByPredicate(Predicate<Node<E>> condition) {
         Optional<Node<E>> rsl = Optional.empty();
-        List<Node<E>> list = new LinkedList<>();
-        list.add(root);
-        Node<E> node;
-        while (!list.isEmpty()) {
-            node = list.remove(0);
+        Queue<Node<E>> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            Node<E> node = queue.poll();
             if (condition.test(node)) {
                 rsl = Optional.of(node);
                 break;
             }
-            list.addAll(node.children);
+            queue.addAll(node.children);
         }
         return rsl;
     }
