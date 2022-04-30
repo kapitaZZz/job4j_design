@@ -38,7 +38,7 @@ public class SimpleTreeTest {
         tree.add(1, 4);
         tree.add(4, 5);
         tree.add(5, 6);
-        assertTrue(tree.add(2, 6));
+        assertFalse(tree.add(2, 6));
     }
 
     @Test
@@ -46,8 +46,8 @@ public class SimpleTreeTest {
         Tree<Integer> tree = new SimpleTree<>(1);
         tree.add(1, 2);
         tree.add(1, 3);
-        tree.add(4, 5);
-        tree.add(4, 6);
+        tree.add(3, 4);
+        tree.add(3, 5);
         assertTrue(tree.isBinary());
     }
 
@@ -56,7 +56,7 @@ public class SimpleTreeTest {
         Tree<Integer> tree = new SimpleTree<>(1);
         tree.add(1, 3);
         tree.add(1, 3);
-        int expect = 2;
+        int expect = 1;
         assertEquals(expect, tree.findBy(1).get().children.size());
     }
 }
