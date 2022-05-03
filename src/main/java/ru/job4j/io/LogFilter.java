@@ -5,13 +5,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LogFilter {
     public List<String> filter(String file) {
         List<String> list = new ArrayList<>();
-        try (BufferedReader bf = new BufferedReader(new FileReader("log.txt"))) {
-            list.add(bf.lines().filter(s -> s.contains("404")).collect(Collectors.toList()).toString());
+        try (BufferedReader bf = new BufferedReader(new FileReader(file))) {
+            for (String line = bf.readLine(); line != null; line = bf.readLine()) {
+                String[] mass = line.split(" ");
+                if (mass[mass.length - 2].contains("404")) {
+                    list.add(line + "\n");
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
