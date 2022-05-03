@@ -31,7 +31,6 @@ public class Config {
                 } else {
                     throw new IllegalArgumentException();
                 }
-
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,5 +50,4 @@ public class Config {
         }
         return out.toString();
     }
-
 }
