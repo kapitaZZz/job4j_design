@@ -22,15 +22,11 @@ public class Config {
                     continue;
                 }
                 String[] mass = lines.split("=", 2);
-                if (lines.contains("=")) {
-                    if (mass[0] != null && mass.length > 1) {
-                        values.put(mass[0], mass[1]);
-                    } else {
-                        throw new IllegalArgumentException();
-                    }
-                } else {
-                    throw new IllegalArgumentException();
+                if (!lines.contains("=") || mass[0] == null || mass.length < 2) {
+                    throw new IllegalArgumentException("Check out keys and values in configuration file."
+                            + " Not enough parameters. It should be ## key=value");
                 }
+                values.put(mass[0], mass[1]);
             }
         } catch (IOException e) {
             e.printStackTrace();
