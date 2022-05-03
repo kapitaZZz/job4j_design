@@ -21,13 +21,15 @@ public class Config {
                 if (lines.startsWith("#")) {
                     continue;
                 }
-                String[] mass = lines.split("=");
+                String[] mass = lines.split("=", 2);
                 if (lines.contains("=")) {
                     if (mass[0] != null && mass.length > 1) {
                         values.put(mass[0], mass[1]);
                     } else {
                         throw new IllegalArgumentException();
                     }
+                } else {
+                    throw new IllegalArgumentException();
                 }
 
             }
