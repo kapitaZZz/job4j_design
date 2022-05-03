@@ -9,7 +9,6 @@ public class Analizy {
         boolean flag = true;
         String start = null;
         String end;
-        List<String> status = new ArrayList<>();
         try (BufferedReader bf = new BufferedReader(new FileReader(source))) {
             for (String line = bf.readLine(); line != null; line = bf.readLine()) {
                 String[] out = line.split(" ");
@@ -19,15 +18,10 @@ public class Analizy {
                 } else if (!flag && line.startsWith("200") || line.startsWith("300")) {
                     flag = true;
                     end = out[1];
-                    status.add(start + "; " + end);
+                    try (PrintWriter write = new PrintWriter(new BufferedOutputStream(new FileOutputStream(target)))) {
+                        write.println(start + "; " + end);
+                    }
                 }
-            }
-            try (PrintWriter write = new PrintWriter(new BufferedOutputStream(new FileOutputStream(target)))) {
-                for (String s : status) {
-                    write.println(s);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         } catch (IOException e) {
             e.printStackTrace();
