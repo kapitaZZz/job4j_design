@@ -38,7 +38,7 @@ public class ConfigTest {
         String commentProps = "./comment.properties";
         Config config = new Config(commentProps);
         config.load();
-        assertThat(config.value("hibernate.connection.url"), is("jdbc:postgresql:=//127.0.0.1:5432=/trackstudio"));
+        assertThat(config.value("hibernate.connection.driver_class"), is("org.=postgresql.=Driver"));
     }
 
     @Test(expected = IllegalArgumentException.class)
