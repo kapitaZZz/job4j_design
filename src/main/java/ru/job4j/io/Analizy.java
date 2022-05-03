@@ -1,15 +1,14 @@
 package ru.job4j.io;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Analizy {
     public void unavailable(String source, String target) {
         boolean flag = true;
         String start = null;
         String end;
-        try (BufferedReader bf = new BufferedReader(new FileReader(source))) {
+        try (BufferedReader bf = new BufferedReader(new FileReader(source));
+             PrintWriter write = new PrintWriter(new BufferedOutputStream(new FileOutputStream(target)))) {
             for (String line = bf.readLine(); line != null; line = bf.readLine()) {
                 String[] out = line.split(" ");
                 if (flag && line.startsWith("400") || flag && line.startsWith("500")) {
@@ -18,9 +17,7 @@ public class Analizy {
                 } else if (!flag && line.startsWith("200") || line.startsWith("300")) {
                     flag = true;
                     end = out[1];
-                    try (PrintWriter write = new PrintWriter(new BufferedOutputStream(new FileOutputStream(target)))) {
-                        write.println(start + "; " + end);
-                    }
+                    write.println(start + "; " + end);
                 }
             }
         } catch (IOException e) {
