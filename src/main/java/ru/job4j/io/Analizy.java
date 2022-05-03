@@ -39,3 +39,4 @@ public class Analizy {
         analizy.unavailable("source.csv", "target.csv");
     }
 }
+
