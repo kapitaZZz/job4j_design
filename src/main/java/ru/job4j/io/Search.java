@@ -9,8 +9,8 @@ import java.util.function.Predicate;
 
 public class Search {
     public static void main(String[] args) throws IOException {
-        if (args.length != 2 || args[0] == null || args[1] == null) {
-            throw new IllegalArgumentException("Root folder is null. Usage java -jar dir.jar ROOT_FOLDER.");
+        if (args.length != 2) {
+            throw new IllegalArgumentException("Two parameters must be specified");
         }
         Path start = Paths.get(args[0]);
         search(start, p -> p.toFile().getName().endsWith(args[1])).forEach(System.out::println);
