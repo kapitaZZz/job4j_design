@@ -9,10 +9,13 @@ import java.util.function.Predicate;
 
 public class Search {
     public static void main(String[] args) throws IOException {
-        if (!args[0].contains(".")) {
+        if (args.length != 2) {
+            throw new IllegalArgumentException("Not enough parameters");
+        }
+        if (!args[0].startsWith("/")) {
             throw new IllegalArgumentException("First parameter must by path to directory");
         }
-        if (!args[1].contains(".js")) {
+        if (!args[1].startsWith(".")) {
             throw new IllegalArgumentException("Second parameter must have file extension");
         }
         Path start = Paths.get(args[0]);
