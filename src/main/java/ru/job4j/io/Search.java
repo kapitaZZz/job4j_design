@@ -12,7 +12,7 @@ public class Search {
         if (args.length != 2) {
             throw new IllegalArgumentException("Not enough parameters");
         }
-        if (!args[0].startsWith("/")) {
+        if (!Files.isDirectory(Path.of(args[0]))) {
             throw new IllegalArgumentException("First parameter must by path to directory");
         }
         if (!args[1].startsWith(".")) {
