@@ -10,6 +10,11 @@ import java.util.function.Predicate;
 public class Search {
     public static void main(String[] args) throws IOException {
         if (args.length != 2) {
+            if (args[0].isEmpty()) {
+                throw new IllegalArgumentException("first parameter cannot be empty");
+            } else if (!args[1].startsWith(".")) {
+                throw new IllegalArgumentException("second parameter must be file extension");
+            }
             throw new IllegalArgumentException("Two parameters must be specified");
         }
         Path start = Paths.get(args[0]);
