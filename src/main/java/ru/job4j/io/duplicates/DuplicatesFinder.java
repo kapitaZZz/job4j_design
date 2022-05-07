@@ -11,7 +11,6 @@ public class DuplicatesFinder {
         Path path = Paths.get("C:\\projects\\job4j_design\\");
         List<Path> pathList = getPath(path);
         pathList.forEach(System.out::println);
-
     }
 
     public static List<Path> getPath(Path path) throws IOException {
@@ -19,5 +18,4 @@ public class DuplicatesFinder {
         Files.walkFileTree(path, duplicatesVisitor);
         return duplicatesVisitor.showPathList();
     }
-
 }
