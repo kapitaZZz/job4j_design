@@ -16,8 +16,11 @@ public class ArgsName {
 
     private void parse(String[] args) {
         for (String s : args) {
+            if (!s.contains("=")) {
+                throw new IllegalArgumentException("Not enough parameters, like: -key=value");
+            }
             String[] temp = s.split("=", 2);
-            if ("".equals(temp[0])) {
+            if ("".equals(temp[0]) || !temp[0].startsWith("-")) {
                 throw new IllegalArgumentException("Key cannot be null");
             }
             if ("".equals(temp[1])) {
