@@ -2,6 +2,7 @@ package ru.job4j.io;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ArgsName {
 
@@ -12,6 +13,10 @@ public class ArgsName {
             throw new IllegalArgumentException("Key cannot be null!");
         }
         return values.get(key);
+    }
+
+    public Set<String> getKeys() {
+        return values.keySet();
     }
 
     private void parse(String[] args) {
