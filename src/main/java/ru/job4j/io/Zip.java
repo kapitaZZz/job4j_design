@@ -1,6 +1,10 @@
 package ru.job4j.io;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -8,13 +12,19 @@ import java.util.zip.ZipOutputStream;
 
 public class Zip {
 
-    public void packFiles(List<File> sources, File target) {
+    private static List<Path> pathList = new ArrayList<>();
+
+    public void packFiles(List<Path> sources, Path target) {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(
                 new FileOutputStream(String.valueOf(target))))) {
-            for (File file : sources) {
-                zipOutputStream.putNextEntry(new ZipEntry(file.toString()));
-                try (BufferedInputStream bf = new BufferedInputStream(new FileInputStream(file))) {
-                    zipOutputStream.write(bf.readAllBytes());
+            Iterator<Path> it = sources.iterator();
+            while (it.hasNext()) {
+                File file = it.next().toFile();
+                zipOutputStream.putNextEntry(new ZipEntry(file.getPath()));
+                try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(file))) {
+                    zipOutputStream.write(out.readAllBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         } catch (IOException e) {
@@ -23,9 +33,12 @@ public class Zip {
 
     }
 
-    private void checkParams(String[] args) {
+    public static void checkParams(String[] args, Path rootDir) throws FileNotFoundException {
         if (args.length != 3) {
             throw new IllegalArgumentException("Not enough parameters");
+        }
+        if (!rootDir.toFile().isDirectory()) {
+            throw new FileNotFoundException("Directory does not exist!");
         }
         ArgsName argsMap = new ArgsName().of(args);
         Set<String> keySet = argsMap.getKeys();
@@ -53,12 +66,20 @@ public class Zip {
         }
     }
 
-    public static void main(String[] args) {
-        new Zip().checkParams(args);
-        Zip zip = new Zip();
-        zip.packSingleFile(
-                new File("./pom.xml"),
-                new File("./pom.zip")
-        );
+    public static void main(String[] args) throws IOException {
+        if (args.length == 0) {
+            throw new IllegalArgumentException(
+                    "Enter: -d directory for archiving, -e exclude file, -o output archive file"
+            );
+        }
+        ArgsName argsMap = ArgsName.of(args);
+        Set<String> argSet = argsMap.getKeys();
+        for (String key : argSet) {
+            if (!"d".equals(key) && !"e".equals(key) && !"o".equals(key)) {
+                throw new IllegalArgumentException("-d directory, -e exclude, -o output");
+            }
+        }
+        pathList = Search.search(Path.of(argsMap.get("d")), p -> !p.toFile().getName().endsWith(argsMap.get("e")));
+        new Zip().packFiles(pathList, Path.of(argsMap.get("o")));
     }
 }
