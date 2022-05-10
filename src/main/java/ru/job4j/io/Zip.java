@@ -1,10 +1,8 @@
 package ru.job4j.io;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -12,20 +10,13 @@ import java.util.zip.ZipOutputStream;
 
 public class Zip {
 
-    private static List<Path> pathList = new ArrayList<>();
+    private List<Path> pathList = new ArrayList<>();
 
     public void packFiles(List<Path> sources, Path target) {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(
                 new FileOutputStream(String.valueOf(target))))) {
-            Iterator<Path> it = sources.iterator();
-            while (it.hasNext()) {
-                File file = it.next().toFile();
-                zipOutputStream.putNextEntry(new ZipEntry(file.getPath()));
-                try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(file))) {
-                    zipOutputStream.write(out.readAllBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            for (Path file : sources) {
+                zipOutputStream.putNextEntry(new ZipEntry(file.toString()));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -33,24 +24,14 @@ public class Zip {
 
     }
 
-    public static void checkParams(String[] args, Path rootDir) throws FileNotFoundException {
-        if (args.length != 3) {
-            throw new IllegalArgumentException("Not enough parameters");
-        }
+    public void checkParams(String[] args, Path rootDir) throws FileNotFoundException {
         if (!rootDir.toFile().isDirectory()) {
             throw new FileNotFoundException("Directory does not exist!");
         }
         ArgsName argsMap = new ArgsName().of(args);
-        Set<String> keySet = argsMap.getKeys();
-        for (String key : keySet) {
-            if (!"-d".equals(key)) {
-                throw new IllegalArgumentException("First parameter must by path to source directory");
-            }
-            if (!"-e".equals(key)) {
-                throw new IllegalArgumentException("Second parameter must have exclude file extension");
-            }
-            if (!"-o".equals(key)) {
-                throw new IllegalArgumentException("Second parameter must have target filename");
+        for (String value : argsMap.getKeys()) {
+            if ("".equals(value)) {
+                throw new IllegalArgumentException("Parameter values cannot bu null.");
             }
         }
     }
@@ -67,7 +48,8 @@ public class Zip {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
+        Zip zip = new Zip();
+        if (args.length < 3) {
             throw new IllegalArgumentException(
                     "Enter: -d directory for archiving, -e exclude file, -o output archive file"
             );
@@ -79,7 +61,7 @@ public class Zip {
                 throw new IllegalArgumentException("-d directory, -e exclude, -o output");
             }
         }
-        pathList = Search.search(Path.of(argsMap.get("d")), p -> !p.toFile().getName().endsWith(argsMap.get("e")));
-        new Zip().packFiles(pathList, Path.of(argsMap.get("o")));
+        zip.pathList = Search.search(Path.of(argsMap.get("d")), p -> !p.toFile().getName().endsWith(argsMap.get("e")));
+        new Zip().packFiles(zip.pathList, Path.of(argsMap.get("o")));
     }
 }
