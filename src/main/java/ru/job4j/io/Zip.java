@@ -4,19 +4,22 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Zip {
 
     private List<Path> pathList = new ArrayList<>();
+    private boolean validateParams;
 
     public void packFiles(List<Path> sources, Path target) {
         try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(
                 new FileOutputStream(String.valueOf(target))))) {
             for (Path file : sources) {
                 zipOutputStream.putNextEntry(new ZipEntry(file.toString()));
+                try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(sources.toString()))) {
+                    zipOutputStream.write(bis.readAllBytes());
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -24,16 +27,20 @@ public class Zip {
 
     }
 
-    public void checkParams(String[] args, Path rootDir) throws FileNotFoundException {
-        if (!rootDir.toFile().isDirectory()) {
-            throw new FileNotFoundException("Directory does not exist!");
-        }
+    private void checkParams(String[] args) throws FileNotFoundException {
         ArgsName argsMap = new ArgsName().of(args);
         for (String value : argsMap.getKeys()) {
-            if ("".equals(value)) {
-                throw new IllegalArgumentException("Parameter values cannot bu null.");
+            if (!Path.of(value).toFile().isDirectory()) {
+                throw new IllegalArgumentException("Root directory cannot be null.");
+            }
+            if (!value.startsWith(".")) {
+                throw new IllegalArgumentException("Parameter must be file extension");
+            }
+            if (!value.endsWith(".zip")) {
+                throw new IllegalArgumentException("Parameter must be pack extension");
             }
         }
+        validateParams = true;
     }
 
     public void packSingleFile(File source, File target) {
@@ -49,19 +56,13 @@ public class Zip {
 
     public static void main(String[] args) throws IOException {
         Zip zip = new Zip();
-        if (args.length < 3) {
-            throw new IllegalArgumentException(
-                    "Enter: -d directory for archiving, -e exclude file, -o output archive file"
-            );
+        ArgsName argsName = new ArgsName();
+        ArgsName map = argsName.of(args);
+        zip.checkParams(args);
+        if (zip.validateParams) {
+            zip.pathList = Search.search(Path.of(argsName.get("-d")),
+                    p -> p.toFile().getName().endsWith(map.get("-e")));
+            zip.packFiles(zip.pathList, Path.of(map.get("-o")));
         }
-        ArgsName argsMap = ArgsName.of(args);
-        Set<String> argSet = argsMap.getKeys();
-        for (String key : argSet) {
-            if (!"d".equals(key) && !"e".equals(key) && !"o".equals(key)) {
-                throw new IllegalArgumentException("-d directory, -e exclude, -o output");
-            }
-        }
-        zip.pathList = Search.search(Path.of(argsMap.get("d")), p -> !p.toFile().getName().endsWith(argsMap.get("e")));
-        new Zip().packFiles(zip.pathList, Path.of(argsMap.get("o")));
     }
 }
