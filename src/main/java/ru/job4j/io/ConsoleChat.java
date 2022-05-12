@@ -21,11 +21,10 @@ public class ConsoleChat {
     public void run() {
         List<String> botSay = readPhrases();
         StringBuilder sb = new StringBuilder();
-        String str;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            do {
-                str = reader.readLine();
-                sb.append(System.lineSeparator()).append(str);
+            String str = reader.readLine();
+            sb.append(System.lineSeparator()).append(str);
+            while (!OUT.equals(str)) {
                 if (STOP.equals(str)) {
                     str = reader.readLine();
                     sb.append(System.lineSeparator()).append(str);
@@ -38,7 +37,8 @@ public class ConsoleChat {
                 String answerBot = botSay.get(random);
                 System.out.println(answerBot);
                 sb.append(System.lineSeparator()).append(answerBot);
-            } while (!OUT.equals(str));
+                str = reader.readLine();
+            }
             saveLog(Collections.singletonList(sb.toString()));
         } catch (IOException e) {
             e.printStackTrace();
