@@ -38,6 +38,7 @@ public class ConsoleChat {
                 System.out.println(answerBot);
                 sb.append(System.lineSeparator()).append(answerBot);
                 str = reader.readLine();
+                sb.append(System.lineSeparator()).append(str);
             }
             saveLog(Collections.singletonList(sb.toString()));
         } catch (IOException e) {
