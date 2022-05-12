@@ -1,7 +1,6 @@
 package ru.job4j.io;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,18 +26,19 @@ public class ConsoleChat {
             do {
                 str = reader.readLine();
                 sb.append(System.lineSeparator()).append(str);
-                if (str.equals(STOP)) {
+                if (STOP.equals(str)) {
                     str = reader.readLine();
                     sb.append(System.lineSeparator()).append(str);
-                    while (!str.equals(CONTINUE)) {
+                    while (!CONTINUE.equals(str)) {
                         str = reader.readLine();
                         sb.append(System.lineSeparator()).append(str);
                     }
                 }
                 int random = (int) (Math.random() * botSay.size());
                 String answerBot = botSay.get(random);
+                System.out.println(answerBot);
                 sb.append(System.lineSeparator()).append(answerBot);
-            } while (!str.equals(OUT));
+            } while (!OUT.equals(str));
             saveLog(Collections.singletonList(sb.toString()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,7 +47,7 @@ public class ConsoleChat {
 
     private List<String> readPhrases() {
         List<String> phrase = new ArrayList<>();
-        try (BufferedReader bf = new BufferedReader(new FileReader("phrases.txt"))) {
+        try (BufferedReader bf = new BufferedReader(new FileReader(botAnswers))) {
             for (String line = bf.readLine(); line != null; line = bf.readLine()) {
                 phrase.add(line);
             }
@@ -58,7 +58,7 @@ public class ConsoleChat {
     }
 
     private void saveLog(List<String> log) {
-        try (PrintWriter print = new PrintWriter(new FileWriter("chat_output.txt",
+        try (PrintWriter print = new PrintWriter(new FileWriter(path,
                 StandardCharsets.UTF_8, true))) {
             log.forEach(print::println);
         } catch (IOException e) {
@@ -68,7 +68,9 @@ public class ConsoleChat {
     }
 
     public static void main(String[] args) {
-        ConsoleChat cc = new ConsoleChat("", "");
+        String path = "dialog_log.txt";
+        String botAnswers = "phrases.txt";
+        ConsoleChat cc = new ConsoleChat(path, botAnswers);
         cc.run();
     }
 }
