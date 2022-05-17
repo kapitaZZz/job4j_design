@@ -1,46 +1,27 @@
 package ru.job4j.io;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Zip {
 
-    private List<Path> pathList = new ArrayList<>();
-    private boolean validateParams;
-
-    public void packFiles(List<Path> sources, Path target) {
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(
-                new FileOutputStream(String.valueOf(target))))) {
-            for (Path file : sources) {
-                zipOutputStream.putNextEntry(new ZipEntry(file.toString()));
-                try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(sources.toString()))) {
-                    zipOutputStream.write(bis.readAllBytes());
+    public void packFiles(List<File> sources, File target) {
+        try (ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(
+                new FileOutputStream(target)))) {
+            for (File file : sources) {
+                zip.putNextEntry(new ZipEntry(file.getPath()));
+                try (BufferedInputStream bf = new BufferedInputStream(new FileInputStream(file))) {
+                    zip.write(bf.readAllBytes());
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-    }
-
-    private void checkParams(String[] args) throws FileNotFoundException {
-        ArgsName argsMap = new ArgsName().of(args);
-        for (String value : argsMap.getKeys()) {
-            if (!Path.of(value).toFile().isDirectory()) {
-                throw new IllegalArgumentException("Root directory cannot be null.");
-            }
-            if (!value.startsWith(".")) {
-                throw new IllegalArgumentException("Parameter must be file extension");
-            }
-            if (!value.endsWith(".zip")) {
-                throw new IllegalArgumentException("Parameter must be pack extension");
-            }
-        }
-        validateParams = true;
     }
 
     public void packSingleFile(File source, File target) {
@@ -55,14 +36,18 @@ public class Zip {
     }
 
     public static void main(String[] args) throws IOException {
-        Zip zip = new Zip();
-        ArgsName argsName = new ArgsName();
-        ArgsName map = argsName.of(args);
-        zip.checkParams(args);
-        if (zip.validateParams) {
-            zip.pathList = Search.search(Path.of(argsName.get("-d")),
-                    p -> p.toFile().getName().endsWith(map.get("-e")));
-            zip.packFiles(zip.pathList, Path.of(map.get("-o")));
+        if (args.length < 3) {
+            throw new IllegalArgumentException("Not enough parameters");
         }
+        ArgsName argsName = ArgsName.of(args);
+        Path start = Path.of(argsName.get("d"));
+        if (!Files.isDirectory(start)) {
+            throw new IllegalArgumentException("Invalid directory");
+        }
+        List<File> files = Search.search(start, p -> !p.toString().endsWith(argsName.get("e")))
+                .stream()
+                .map(Path::toFile)
+                .collect(Collectors.toList());
+        new Zip().packFiles(files, new File(argsName.get("o")));
     }
 }
