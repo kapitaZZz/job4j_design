@@ -7,10 +7,25 @@ public class UsageLog4j {
 
     private static final Logger LOG = LoggerFactory.getLogger(UsageLog4j.class.getName());
     public static void main(String[] args) {
-        LOG.trace("trace message");
-        LOG.debug("debug message");
-        LOG.info("info message");
-        LOG.warn("warn message");
-        LOG.error("error message");
+        String name = "Sam Fisher";
+        int age = 33;
+        boolean isMarried = false;
+        float height = 1.72f;
+        double salary = 45000.50;
+        long personId = 41235874513L;
+        byte childrenCount = 1;
+        short workExperience = 15;
+        char sex = 'm';
+        LOG.debug("User info name : {}, age : {}, height : {}, salary per year : {}, personal ID : {},"
+                        + " child(children) : {}, work experience : {}, is married : {}, sex : {}",
+                name,
+                age,
+                height,
+                salary,
+                personId,
+                childrenCount,
+                workExperience,
+                isMarried,
+                sex);
     }
 }
