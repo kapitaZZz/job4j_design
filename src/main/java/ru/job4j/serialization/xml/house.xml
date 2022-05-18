@@ -1,0 +1,9 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+<house addresss="Red_Square" stages="35" isComplete="false">
+    <worker name="Ivan" experience="15"/>
+    <typeHouse>
+        <type>Skyscraper</type>
+        <type>TownHouse</type>
+        <type>EliteApartments</type>
+    </typeHouse>
+</house>
