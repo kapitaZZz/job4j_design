@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class EchoServer {
     public static void main(String[] args) throws IOException {
@@ -16,9 +17,13 @@ public class EchoServer {
                      BufferedReader in = new BufferedReader(
                              new InputStreamReader(socket.getInputStream()))) {
                     out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
-                    String message = in.readLine().split(" ")[1].split("=")[1];
-                    if ("bye".equalsIgnoreCase(message)) {
+                    String[] message = in.readLine().split(" ")[1].split("=");
+                    if ("Hello".equalsIgnoreCase(message[1])) {
+                        out.write("Hello!".getBytes(StandardCharsets.UTF_8));
+                    } else if ("Exit".equalsIgnoreCase(message[1])) {
                         server.close();
+                    } else {
+                        out.write("What".getBytes(StandardCharsets.UTF_8));
                     }
                     out.flush();
                 }
