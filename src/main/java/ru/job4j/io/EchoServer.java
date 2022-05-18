@@ -22,9 +22,9 @@ public class EchoServer {
                              new InputStreamReader(socket.getInputStream()))) {
                     out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
                     String message = in.readLine();
-                    if (message.contains("Hello")) {
+                    if (message.contains("/?msg=ByeHello")) {
                         out.write("Hello!".getBytes(StandardCharsets.UTF_8));
-                    } else if (message.contains("Exit")) {
+                    } else if (message.contains("/?msg=ByeExit")) {
                         server.close();
                     } else {
                         out.write("What".getBytes(StandardCharsets.UTF_8));
