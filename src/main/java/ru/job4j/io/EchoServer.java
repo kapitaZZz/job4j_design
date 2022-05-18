@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 
 public class EchoServer {
     private static final Logger LOG = LoggerFactory.getLogger(UsageLog4j.class.getName());
@@ -21,13 +20,10 @@ public class EchoServer {
                      BufferedReader in = new BufferedReader(
                              new InputStreamReader(socket.getInputStream()))) {
                     out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
-                    String[] message = in.readLine().split(" ")[1].split("=");
-                    if ("Hello".equalsIgnoreCase(message[1])) {
-                        out.write("Hello!".getBytes(StandardCharsets.UTF_8));
-                    } else if ("Exit".equalsIgnoreCase(message[1])) {
-                        server.close();
-                    } else {
-                        out.write("What".getBytes(StandardCharsets.UTF_8));
+                    for (String str = in.readLine(); str != null && !str.isEmpty(); str = in.readLine()) {
+                        if (str.contains("Bye")) {
+                            server.close();
+                        }
                     }
                     out.flush();
                 }
