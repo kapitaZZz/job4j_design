@@ -40,7 +40,7 @@ public class CSVReader {
                 builder.deleteCharAt(builder.length() - 1);
                 builder.append(System.lineSeparator());
             }
-            if (target.equals("stdout")) {
+            if ("stdout".equalsIgnoreCase(target)) {
                 System.out.println(builder);
             } else {
                 try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(target))) {
@@ -50,5 +50,13 @@ public class CSVReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        if (args.length != 4) {
+            throw new IllegalArgumentException(args.length + "");
+        }
+        ArgsName argsName = ArgsName.of(args);
+        handle(argsName);
     }
 }
