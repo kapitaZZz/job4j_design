@@ -9,19 +9,21 @@ public class UsageLog4j {
     public static void main(String[] args) {
         String name = "Sam Fisher";
         int age = 33;
-        String job = "CIA";
-        String birthDate = "21.09.1988";
-        String birtCountry = "UK";
         boolean isMarried = false;
-        boolean driverLicense = true;
-        LOG.debug("User info name : {}, age : {}, work place at : {}, birthdate : {}, has driver license : {},"
-                        + " birt country : {}, is married : {}",
+        float height = 1.72f;
+        double salary = 45000.50;
+        long personId = 41235874513L;
+        byte childrenCount = 1;
+        short workExperience = 15;
+        LOG.debug("User info name : {}, age : {}, height : {}, salary per year : {}, personal ID : {},"
+                        + " child(children) : {}, work experience : {}, is married : {}",
                 name,
                 age,
-                job,
-                birthDate,
-                driverLicense,
-                birtCountry,
+                height,
+                salary,
+                personId,
+                childrenCount,
+                workExperience,
                 isMarried);
     }
 }
