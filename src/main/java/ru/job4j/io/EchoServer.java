@@ -17,7 +17,7 @@ public class EchoServer {
                              new InputStreamReader(socket.getInputStream()))) {
                     out.write("HTTP/1.1 200 OK\r\n\r\n".getBytes());
                     String message = in.readLine().split(" ")[1].split("=")[1];
-                    if ("buy".equals(message.toLowerCase())) {
+                    if ("bye".equalsIgnoreCase(message)) {
                         server.close();
                     }
                     out.flush();
