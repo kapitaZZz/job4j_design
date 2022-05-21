@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 public class MaskFilter implements Filter {
     @Override
     public Predicate<Path> getPathPredicate(String name) {
-        return folder -> Pattern.matches((name.replace("?", ".")
-                .replace(".", "[.]")
+        return folder -> Pattern.matches((name.replace(".", "[.]")
+                .replace("?", ".")
                 .replace("*", ".*")), folder.getFileName().toString());
     }
 }
