@@ -8,6 +8,7 @@ public class MaskFilter implements Filter {
     @Override
     public Predicate<Path> getPathPredicate(String name) {
         return folder -> Pattern.matches((name.replace("?", ".")
-                .replace("*", ",*")), folder.getFileName().toString());
+                .replace(".", "[.]")
+                .replace("*", ".*")), folder.getFileName().toString());
     }
 }
