@@ -18,7 +18,13 @@ select * from employees e right join departments d on e.id = d.employee_id;
 select * from employees e full join departments d on e.id = d.employee_id;
 select * from employees e cross join departments d;
 
-select * from employees e left join departments d on e.id = d.employee_id
+select e.name, d.name as departament from departments d right join employees e
+on e.id = d.employee_id;
+
+select e.name, d.name as departament from employees e left join departments d
+on e.id = d.employee_id;
+
+select d.name from departments d left join employees e on e.id = d.employee_id
 where d.employee_id is null;
 
 create table teens(
