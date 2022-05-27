@@ -93,20 +93,21 @@ public class TableEditor implements AutoCloseable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        TableEditor tableEditor = new TableEditor(properties);
-        String tableName = "test_database";
-        String columnName = "next_column";
-        String columnType = "varchar(255)";
-        String newColumnName = "new_column";
-        tableEditor.createTable(tableName);
-        System.out.println(getTableScheme(tableEditor.connection, tableName));
-        tableEditor.addColumn(tableName, columnName, columnType);
-        System.out.println(getTableScheme(tableEditor.connection, tableName));
-        tableEditor.renameColumn(tableName, columnName, newColumnName);
-        System.out.println(getTableScheme(tableEditor.connection, tableName));
-        tableEditor.dropColumn(tableName, newColumnName);
-        System.out.println(getTableScheme(tableEditor.connection, tableName));
-        tableEditor.dropTable(tableName);
-        System.out.println(getTableScheme(tableEditor.connection, tableName));
+        try (TableEditor tableEditor = new TableEditor(properties)) {
+            String tableName = "test_database";
+            String columnName = "next_column";
+            String columnType = "varchar(255)";
+            String newColumnName = "new_column";
+            tableEditor.createTable(tableName);
+            System.out.println(getTableScheme(tableEditor.connection, tableName));
+            tableEditor.addColumn(tableName, columnName, columnType);
+            System.out.println(getTableScheme(tableEditor.connection, tableName));
+            tableEditor.renameColumn(tableName, columnName, newColumnName);
+            System.out.println(getTableScheme(tableEditor.connection, tableName));
+            tableEditor.dropColumn(tableName, newColumnName);
+            System.out.println(getTableScheme(tableEditor.connection, tableName));
+            tableEditor.dropTable(tableName);
+            System.out.println(getTableScheme(tableEditor.connection, tableName));
+        }
     }
 }
