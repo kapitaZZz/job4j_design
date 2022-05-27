@@ -1,7 +1,7 @@
 package ru.job4j.jdbc;
 
-import org.postgresql.Driver;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringJoiner;
 
-public class TableEditor {
+public class TableEditor implements AutoCloseable {
 
     private Connection connection;
 
@@ -20,7 +20,7 @@ public class TableEditor {
         initConnection();
     }
 
-    public void closeConnection() throws SQLException {
+    public void close() throws SQLException {
         if (connection != null) {
             connection.close();
         }
@@ -87,7 +87,13 @@ public class TableEditor {
     }
 
     public static void main(String[] args) throws SQLException {
-        TableEditor tableEditor = new TableEditor(new Properties());
+        Properties properties = new Properties();
+        try (InputStream in = TableEditor.class.getClassLoader().getResourceAsStream("app.properties")) {
+            properties.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        TableEditor tableEditor = new TableEditor(properties);
         String tableName = "test_database";
         String columnName = "next_column";
         String columnType = "varchar(255)";
