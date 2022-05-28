@@ -1,4 +1,4 @@
-package ru.job4j.spammer;
+package ru.job4j.jdbc.spammer;
 
 import java.io.*;
 import java.sql.Connection;
@@ -25,6 +25,7 @@ public class ImportDB {
             rd.lines().forEach(s -> {
                 if (!s.isEmpty()) {
                     String[] mass = s.split(";");
+                    validateStrings(mass);
                     users.add(new User(mass[0], mass[1]));
                 }
             });
@@ -57,6 +58,13 @@ public class ImportDB {
             this.name = name;
             this.email = email;
         }
+    }
+
+    private boolean validateStrings(String[] args) {
+        if (args.length < 2 || args[0].isEmpty() || args[1].isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        return true;
     }
 
 
