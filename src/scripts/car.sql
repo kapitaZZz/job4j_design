@@ -33,7 +33,7 @@ select car.name as car, body.name as body,
 from car
        left join body on car.body_id = body.id
        left join engine on car.engine_id = engine.id
-       left join transmission on car.transmission = transmission.id;
+       left join transmission on car.transmission_id = transmission.id;
 
 select b.name from body b left join car c on c.body_id = b.id where c.body_id is null;
 select e.name from engine e left join car c on c.engine_id = e.id where c.engine_id is null;
